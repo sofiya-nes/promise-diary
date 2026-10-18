@@ -41,6 +41,22 @@
     $("case-form").addEventListener("submit", saveCase);
     $("show-closed").addEventListener("change", renderList);
 
+    $("date").value = todayIso();
+    $("date").addEventListener("change", renderList);
+    $("date-prev").addEventListener("click", function () {
+      shiftDate(-1);
+    });
+    $("date-next").addEventListener("click", function () {
+      shiftDate(1);
+    });
+    $("date-today").addEventListener("click", function () {
+      $("date").value = todayIso();
+      renderList();
+    });
+    document.querySelectorAll('input[name="period"]').forEach(function (radio) {
+      radio.addEventListener("change", renderList);
+    });
+
     $("card").hidden = true;
     renderList();
   }
@@ -59,16 +75,20 @@
   }
 
   /**
-   * Перерисовывает список дел.
+   * Перерисовывает список дел за выбранный период.
    */
   function renderList() {
     var today = todayIso();
+    var range = periodRange();
     $("case-list").innerHTML = "";
-    $("period-title").textContent = "Все дела";
+    $("period-title").textContent = range.from === range.to ? range.from : range.from + " — " + range.to;
 
     var shown = 0;
     cases.forEach(function (item) {
       if (item.status !== "open" && !$("show-closed").checked) {
+        return;
+      }
+      if (item.promisedAt > range.to || item.dueAt < range.from) {
         return;
       }
       var li = document.createElement("li");
@@ -144,13 +164,74 @@
   }
 
   /**
+   * Выбранный период: "day", "week" или "month".
+   */
+  function selectedPeriod() {
+    return document.querySelector('input[name="period"]:checked').value;
+  }
+
+  /**
+   * Начало и конец выбранного периода в виде { from, to }.
+   * Неделя — с понедельника по воскресенье.
+   */
+  function periodRange() {
+    var date = fromIso($("date").value || todayIso());
+    var period = selectedPeriod();
+
+    if (period === "day") {
+      return { from: toIso(date), to: toIso(date) };
+    }
+    if (period === "week") {
+      var monday = new Date(date.getFullYear(), date.getMonth(), date.getDate() - (date.getDay() + 6) % 7);
+      var sunday = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + 6);
+      return { from: toIso(monday), to: toIso(sunday) };
+    }
+    var first = new Date(date.getFullYear(), date.getMonth(), 1);
+    var last = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    return { from: toIso(first), to: toIso(last) };
+  }
+
+  /**
+   * Стрелки сдвигают дату на один день, неделю или месяц.
+   */
+  function shiftDate(step) {
+    var date = fromIso($("date").value || todayIso());
+    var period = selectedPeriod();
+
+    if (period === "day") {
+      date.setDate(date.getDate() + step);
+    } else if (period === "week") {
+      date.setDate(date.getDate() + 7 * step);
+    } else {
+      date.setDate(1);
+      date.setMonth(date.getMonth() + step);
+    }
+    $("date").value = toIso(date);
+    renderList();
+  }
+
+  /**
    * Сегодняшняя дата ГГГГ-ММ-ДД по местному времени.
    */
   function todayIso() {
-    var now = new Date();
-    var month = String(now.getMonth() + 1).padStart(2, "0");
-    var day = String(now.getDate()).padStart(2, "0");
-    return now.getFullYear() + "-" + month + "-" + day;
+    return toIso(new Date());
+  }
+
+  /**
+   * Дата → строка ГГГГ-ММ-ДД.
+   */
+  function toIso(date) {
+    var month = String(date.getMonth() + 1).padStart(2, "0");
+    var day = String(date.getDate()).padStart(2, "0");
+    return date.getFullYear() + "-" + month + "-" + day;
+  }
+
+  /**
+   * Строка ГГГГ-ММ-ДД → дата.
+   */
+  function fromIso(iso) {
+    var parts = iso.split("-");
+    return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
   }
 
   document.addEventListener("DOMContentLoaded", start);

@@ -1,0 +1,95 @@
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  font-family: Verdana, sans-serif;
+  background: #f4f4f4;
+}
+
+header {
+  padding: 8px 16px;
+  background: #3b4a6b;
+  color: white;
+}
+
+#warnings {
+  margin: 16px;
+  padding: 8px;
+  background: #fff3cd;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1.5fr;
+  gap: 16px;
+  padding: 16px;
+  align-items: start;
+}
+
+.sidebar,
+.cases,
+.card {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+}
+
+label,
+input,
+select,
+textarea {
+  display: block;
+  margin-bottom: 8px;
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  padding: 8px;
+  font: inherit;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+  background: white;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  display: inline;
+  width: auto;
+  accent-color: #3b4a6b;
+}
+
+fieldset {
+  margin-bottom: 8px;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+}
+
+button {
+  width: auto;
+  margin-bottom: 8px;
+  background: #3b4a6b;
+  color: white;
+}
+
+.date-nav {
+  display: flex;
+  gap: 8px;
+}
+
+#case-list {
+  padding: 0;
+  list-style: none;
+}
+
+#case-list li {
+  padding: 8px;
+  margin-bottom: 8px;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+}

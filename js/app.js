@@ -14,6 +14,9 @@
   var cases = [];
   var selectedId = null;
 
+  var DRAFT_FIELDS = ["case-title", "case-requester", "case-request", "case-answer",
+    "case-promised", "case-due", "case-status", "comment-text"];
+
   /**
    * Находит элемент страницы по id.
    */
@@ -36,8 +39,11 @@
       $("warnings").hidden = true;
     });
     $("case-cancel").addEventListener("click", function () {
+      removeDraft();
       $("card").hidden = true;
     });
+    $("case-form").addEventListener("input", saveDraft);
+    $("comment-text").addEventListener("input", saveDraft);
     $("case-form").addEventListener("submit", saveCase);
     $("comment-form").addEventListener("submit", addComment);
     $("show-closed").addEventListener("change", renderList);
@@ -119,6 +125,9 @@
    * Открывает карточку: существующее дело или пустую форму для нового (item = null).
    */
   function openCase(item) {
+    if (!item || item.id !== selectedId) {
+      $("comment-text").value = "";
+    }
     selectedId = item ? item.id : null;
     $("card-title").textContent = item ? "Карточка дела" : "Новое дело";
 
@@ -134,6 +143,7 @@
     if (item) {
       renderComments(item);
     }
+    $("draft-note").hidden = !restoreDraft();
     $("card").hidden = false;
   }
 
@@ -159,6 +169,7 @@
     item.status = $("case-status").value;
 
     CaseStore.save(item);
+    removeDraft();
     openCase(item);
     renderList();
   }
@@ -196,7 +207,48 @@
     item.comments.push({ at: nowText(), text: $("comment-text").value });
     CaseStore.save(item);
     $("comment-text").value = "";
+    if (localStorage.getItem(draftKey())) {
+      saveDraft();
+    }
     renderComments(item);
+  }
+
+  /**
+   * Ключ черновика открытой карточки.
+   */
+  function draftKey() {
+    return "promise-diary:draft:" + (selectedId || "new");
+  }
+
+  /**
+   * Сохраняет всё, что сейчас введено в карточке, как черновик.
+   * Вызывается на каждый ввод, поэтому ничего не теряется.
+   */
+  function saveDraft() {
+    var draft = {};
+    DRAFT_FIELDS.forEach(function (id) {
+      draft[id] = $(id).value;
+    });
+    localStorage.setItem(draftKey(), JSON.stringify(draft));
+  }
+
+  /**
+   * Подставляет черновик в поля карточки. Возвращает true, если черновик был.
+   */
+  function restoreDraft() {
+    var text = localStorage.getItem(draftKey());
+    if (!text) {
+      return false;
+    }
+    var draft = JSON.parse(text);
+    DRAFT_FIELDS.forEach(function (id) {
+      $(id).value = draft[id];
+    });
+    return true;
+  }
+
+  function removeDraft() {
+    localStorage.removeItem(draftKey());
   }
 
   /**

@@ -63,8 +63,8 @@
       <p id="empty-message" hidden>За этот период дел нет.</p>
     </main>
 
-    <section class="card">
-      <h2>Карточка дела</h2>
+    <section class="card" id="card">
+      <h2 id="card-title">Карточка дела</h2>
 
       <form id="case-form">
         <label for="case-title">Название</label>
@@ -93,10 +93,8 @@
           <option value="cancelled">Закрыто: отменено</option>
         </select>
 
-        <p id="case-closed-at" hidden>Закрыто: <span></span></p>
 
         <button type="submit">Сохранить</button>
-        <button type="button" id="case-close">Закрыть дело</button>
         <button type="button" id="case-cancel">Отмена</button>
       </form>
 
@@ -120,5 +118,6 @@
   </div>
 
   <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

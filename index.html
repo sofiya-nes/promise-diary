@@ -11,6 +11,14 @@
     <p>Канцелярия Патриция. Ведёт Стукпостук.</p>
   </header>
 
+  <div id="warnings" role="alert" hidden>
+    <strong>Внимание</strong>
+    <ul id="warning-list">
+      <li>1 запись повреждена и пропущена. Остальные дела загружены.</li>
+    </ul>
+    <button type="button" id="warnings-close">Понятно</button>
+  </div>
+
   <div class="layout">
     <aside class="sidebar">
       <h2>Управление</h2>
@@ -91,6 +99,23 @@
         <button type="button" id="case-close">Закрыть дело</button>
         <button type="button" id="case-cancel">Отмена</button>
       </form>
+
+      <div id="comments">
+        <h3>Комментарии</h3>
+
+        <ul id="comment-list">
+          <li>
+            <time datetime="2026-10-18T19:40">18.10.2026 19:40</time>
+            <p>Гильдия торговцев снова спрашивала про мост.</p>
+          </li>
+        </ul>
+
+        <form id="comment-form">
+          <label for="comment-text">Новый комментарий</label>
+          <textarea id="comment-text" rows="2" required></textarea>
+          <button type="submit">Добавить</button>
+        </form>
+      </div>
     </section>
   </div>
 </body>

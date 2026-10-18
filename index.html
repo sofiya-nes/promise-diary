@@ -18,7 +18,7 @@
       <button type="button" id="new-case">+ Новое дело</button>
 
       <label for="search">Поиск</label>
-      <input type="search" id="search" placeholder="Введите ключевое слово">
+      <input type="search" id="search" placeholder="Гильдия, мост, слово из ответа">
 
       <fieldset>
         <legend>Период</legend>
@@ -42,11 +42,55 @@
     </aside>
 
     <main class="cases">
-      <h2>Дела</h2>
+      <h2 id="period-title">Неделя 12–18 октября 2026</h2>
+
+      <ul id="case-list">
+        <li class="case-item">
+          <strong>Мост через Анк</strong>
+          <span>Гильдия торговцев</span>
+          <span>срок 20.10.2026 · открыто</span>
+        </li>
+      </ul>
+
+      <p id="empty-message" hidden>За этот период дел нет.</p>
     </main>
 
     <section class="card">
       <h2>Карточка дела</h2>
+
+      <form id="case-form">
+        <label for="case-title">Название</label>
+        <input type="text" id="case-title" required placeholder="Мост через Анк">
+
+        <label for="case-requester">Кто просил</label>
+        <input type="text" id="case-requester" required placeholder="Гильдия торговцев">
+
+        <label for="case-request">Суть просьбы</label>
+        <textarea id="case-request" rows="3"></textarea>
+
+        <label for="case-answer">Ответ Патриция (дословно)</label>
+        <textarea id="case-answer" rows="3"></textarea>
+
+        <label for="case-promised">Когда обещано</label>
+        <input type="date" id="case-promised" required>
+
+        <label for="case-due">Срок</label>
+        <input type="date" id="case-due" required>
+
+        <label for="case-status">Статус</label>
+        <select id="case-status">
+          <option value="open">Открыто</option>
+          <option value="done">Закрыто: выполнено</option>
+          <option value="refused">Закрыто: отказано</option>
+          <option value="cancelled">Закрыто: отменено</option>
+        </select>
+
+        <p id="case-closed-at" hidden>Закрыто: <span></span></p>
+
+        <button type="submit">Сохранить</button>
+        <button type="button" id="case-close">Закрыть дело</button>
+        <button type="button" id="case-cancel">Отмена</button>
+      </form>
     </section>
   </div>
 </body>

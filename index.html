@@ -14,6 +14,31 @@
   <div class="layout">
     <aside class="sidebar">
       <h2>Управление</h2>
+
+      <button type="button" id="new-case">+ Новое дело</button>
+
+      <label for="search">Поиск</label>
+      <input type="search" id="search" placeholder="Введите ключевое слово">
+
+      <fieldset>
+        <legend>Период</legend>
+        <label><input type="radio" name="period" value="day"> День</label>
+        <label><input type="radio" name="period" value="week" checked> Неделя</label>
+        <label><input type="radio" name="period" value="month"> Месяц</label>
+      </fieldset>
+
+      <label for="date">Дата</label>
+      <div class="date-nav">
+        <button type="button" id="date-prev" title="Предыдущий период">◀</button>
+        <input type="date" id="date">
+        <button type="button" id="date-next" title="Следующий период">▶</button>
+        <button type="button" id="date-today">Сегодня</button>
+      </div>
+
+      <label>
+        <input type="checkbox" id="show-closed">
+        Показывать закрытые
+      </label>
     </aside>
 
     <main class="cases">

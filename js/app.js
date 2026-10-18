@@ -39,7 +39,9 @@
       $("card").hidden = true;
     });
     $("case-form").addEventListener("submit", saveCase);
+    $("comment-form").addEventListener("submit", addComment);
     $("show-closed").addEventListener("change", renderList);
+    $("search").addEventListener("input", renderList);
 
     $("date").value = todayIso();
     $("date").addEventListener("change", renderList);
@@ -80,15 +82,22 @@
   function renderList() {
     var today = todayIso();
     var range = periodRange();
+    var query = $("search").value.trim().toLowerCase();
     $("case-list").innerHTML = "";
     $("period-title").textContent = range.from === range.to ? range.from : range.from + " — " + range.to;
+    if (query) {
+      $("period-title").textContent = "Поиск: " + $("search").value.trim();
+    }
 
     var shown = 0;
     cases.forEach(function (item) {
       if (item.status !== "open" && !$("show-closed").checked) {
         return;
       }
-      if (item.promisedAt > range.to || item.dueAt < range.from) {
+      if (query && !matches(item, query)) {
+        return;
+      }
+      if (!query && (item.promisedAt > range.to || item.dueAt < range.from)) {
         return;
       }
       var li = document.createElement("li");
@@ -121,7 +130,10 @@
     $("case-due").value = item ? item.dueAt : todayIso();
     $("case-status").value = item ? item.status : "open";
 
-    $("comments").hidden = true;
+    $("comments").hidden = !item;
+    if (item) {
+      renderComments(item);
+    }
     $("card").hidden = false;
   }
 
@@ -147,8 +159,44 @@
     item.status = $("case-status").value;
 
     CaseStore.save(item);
-    selectedId = item.id;
+    openCase(item);
     renderList();
+  }
+
+  /**
+   * Поиск идёт по всем делам, без учёта периода.
+   */
+  function matches(item, query) {
+    var text = item.title + " " + item.requester + " " + item.request + " " + item.answer;
+    item.comments.forEach(function (comment) {
+      text += " " + comment.text;
+    });
+    return text.toLowerCase().indexOf(query) >= 0;
+  }
+
+  /**
+   * Показывает комментарии дела: время и текст.
+   */
+  function renderComments(item) {
+    $("comment-list").innerHTML = "";
+    item.comments.forEach(function (comment) {
+      var li = document.createElement("li");
+      li.textContent = comment.at + " — " + comment.text;
+      $("comment-list").appendChild(li);
+    });
+  }
+
+  /**
+   * Добавляет комментарий с текущим временем к открытому делу и сразу сохраняет.
+   */
+  function addComment(event) {
+    event.preventDefault();
+
+    var item = findCase(selectedId);
+    item.comments.push({ at: nowText(), text: $("comment-text").value });
+    CaseStore.save(item);
+    $("comment-text").value = "";
+    renderComments(item);
   }
 
   /**
@@ -215,6 +263,16 @@
    */
   function todayIso() {
     return toIso(new Date());
+  }
+
+  /**
+   * Текущие дата и время строкой ГГГГ-ММ-ДД ЧЧ:ММ.
+   */
+  function nowText() {
+    var now = new Date();
+    var hours = String(now.getHours()).padStart(2, "0");
+    var minutes = String(now.getMinutes()).padStart(2, "0");
+    return toIso(now) + " " + hours + ":" + minutes;
   }
 
   /**

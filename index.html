@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Дневник обещаний</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Дневник обещаний</h1>
+    <p>Канцелярия Патриция. Ведёт Стукпостук.</p>
+  </header>
+
+  <div id="warnings" role="alert" hidden>
+    <strong>Внимание</strong>
+    <ul id="warning-list">
+      <li>1 запись повреждена и пропущена. Остальные дела загружены.</li>
+    </ul>
+    <button type="button" id="warnings-close">Понятно</button>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Управление</h2>
+
+      <button type="button" id="new-case">+ Новое дело</button>
+
+      <label for="search">Поиск</label>
+      <input type="search" id="search" placeholder="Гильдия, мост, слово из ответа">
+
+      <fieldset>
+        <legend>Период</legend>
+        <label><input type="radio" name="period" value="day"> День</label>
+        <label><input type="radio" name="period" value="week" checked> Неделя</label>
+        <label><input type="radio" name="period" value="month"> Месяц</label>
+      </fieldset>
+
+      <label for="date">Дата</label>
+      <div class="date-nav">
+        <button type="button" id="date-prev" title="Предыдущий период">◀</button>
+        <input type="date" id="date">
+        <button type="button" id="date-next" title="Следующий период">▶</button>
+        <button type="button" id="date-today">Сегодня</button>
+      </div>
+
+      <label>
+        <input type="checkbox" id="show-closed">
+        Показывать закрытые
+      </label>
+    </aside>
+
+    <main class="cases">
+      <h2 id="period-title">Дела</h2>
+
+      <ul id="case-list">
+        <li class="case-item">
+          <strong>Мост через Анк</strong>
+          <span>Гильдия торговцев</span>
+          <span>срок 20.10.2026 · открыто</span>
+        </li>
+      </ul>
+
+      <p id="empty-message" hidden>За этот период дел нет.</p>
+    </main>
+
+    <section class="card" id="card">
+      <h2 id="card-title">Карточка дела</h2>
+      <p id="draft-note" hidden>Восстановлен несохранённый черновик.</p>
+
+      <form id="case-form">
+        <label for="case-title">Название</label>
+        <input type="text" id="case-title" required placeholder="Мост через Анк">
+
+        <label for="case-requester">Кто просил</label>
+        <input type="text" id="case-requester" required placeholder="Гильдия торговцев">
+
+        <label for="case-request">Суть просьбы</label>
+        <textarea id="case-request" rows="3"></textarea>
+
+        <label for="case-answer">Ответ Патриция (дословно)</label>
+        <textarea id="case-answer" rows="3"></textarea>
+
+        <label for="case-promised">Когда обещано</label>
+        <input type="date" id="case-promised" required>
+
+        <label for="case-due">Срок</label>
+        <input type="date" id="case-due" required>
+
+        <label for="case-status">Статус</label>
+        <select id="case-status">
+          <option value="open">Открыто</option>
+          <option value="done">Закрыто: выполнено</option>
+          <option value="refused">Закрыто: отказано</option>
+          <option value="cancelled">Закрыто: отменено</option>
+        </select>
+
+
+        <button type="submit">Сохранить</button>
+        <button type="button" id="case-cancel">Отмена</button>
+      </form>
+
+      <div id="comments">
+        <h3>Комментарии</h3>
+
+        <ul id="comment-list"></ul>
+
+        <form id="comment-form">
+          <label for="comment-text">Новый комментарий</label>
+          <textarea id="comment-text" rows="2" required></textarea>
+          <button type="submit">Добавить</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
